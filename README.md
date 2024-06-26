@@ -1,6 +1,4 @@
-LLM RAG system
-
-RAG system
+**RAG system**
 
 Using LLM and RAG to build a Q-A system based on specific knowledge. GUI is implemented by Streamlit.
 
@@ -13,8 +11,8 @@ Version: 1.1
 # Getting Started
 
 ```
-conda create -n rag-system python=3.10
-conda activate rag-system
+conda create -n rag python=3.10
+conda activate rag
 pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain
 ```
 
@@ -27,12 +25,12 @@ Run it by `streamlit run app.py`
 ```
 ├── app.py
 ├── documents # 存放 PDF 文档的文件夹
-│   └── etc.
+│   └── etc.
 ├── documents_cache.json # 载入文档的缓存，第一次运行时生成
 ├── embeddings # 向量嵌入的缓存，第一次运行时生成
-│   ├── embeddings.npy
-│   ├── embeddings_batch_0.npy
-│   └── etc.
+│   ├── embeddings.npy
+│   ├── embeddings_batch_0.npy
+│   └── etc.
 └── README.md
 ```
 
