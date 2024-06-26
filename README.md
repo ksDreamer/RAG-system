@@ -11,8 +11,8 @@ Version: 1.1
 # Getting Started
 
 ```
-conda create -n rag python=3.10
-conda activate rag
+conda create -n rag-system python=3.10
+conda activate rag-system
 pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain
 ```
 
