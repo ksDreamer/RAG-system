@@ -13,8 +13,8 @@ Version: 1.1
 # Getting Started
 
 ```
-conda create -n rag python=3.10
-conda activate rag
+conda create -n rag-system python=3.10
+conda activate rag-system
 pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain
 ```
 
@@ -37,5 +37,5 @@ Run it by `streamlit run app.py`
 ```
 
 # Developing Log
-v1.1: 添加多个注释方便阅读；优化函数preprocess_documents名改为split_text_chunks；在GUI里增加各步骤执行成功的反馈；考虑添加local llm；Streamlit里对'''多行注释'''好像有些独特用法，st.markdown (TD)
+v1.1: 添加多个注释方便阅读；优化函数preprocess_documents名改为split_text_chunks；在GUI里增加各步骤执行成功的反馈；考虑添加local llm；Streamlit里对'''多行注释'''好像有些独特用法，st.markdown (TD)  
 v1.0: 增加文档载入和向量嵌入的缓存机制；添加向量嵌入的批处理操作避免内存占用过大；暂时没有添加“上传文档”按钮，没有做文件更新缓存变动检查。
