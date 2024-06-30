@@ -8,6 +8,8 @@ Date: 2024/06/30
 
 Version: 1.3
 
+![overview](./image/overview.png)
+
 # Getting Started
 
 ```
@@ -19,6 +21,8 @@ pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain
 Put the files to be read under `./documents/` directory manually, or upload them in GUI.
 
 Run it by `streamlit run app.py`
+
+![running](./image/running.png)
 
 # File Structure
 
@@ -40,6 +44,7 @@ Run it by `streamlit run app.py`
 ```
 
 # Developing Log
+
 v1.3: 更新缓存检查机制和命名规范；调整GUI，增加侧边栏，因为随着交互内容增加，想上传新文件/查看已上传文件信息要翻很久，如果有侧边栏/冻结首栏比较好。embeddings的缓存增量更新还没做。
 
 v1.2: 添加上传文件功能。  
