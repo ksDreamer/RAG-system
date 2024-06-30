@@ -1,10 +1,10 @@
 # RAG system
 # Using LLM and RAG to build a Q-A system based on specific knowledge. GUI is implemented by Streamlit.
-# Author: Kevin Stark, Jiarui Feng
-# Date: 2024/06/26
-# Version: 1.1
+# Author: Kevin Stark, Jiarui Feng, Bowen Wang
+# Date: 2024/06/30
+# Version: 1.3
 # You must have these Python packages: streamlit, PyPDF2, sentence_transformers, faiss, requests, json, langchain
-# Put the files to be read under `./documents` directory 
+# Put the files to be read under `./documents` directory manually, or use the upload button in GUI.
 # Run it by `streamlit run app.py`
 
 import streamlit as st
@@ -20,22 +20,27 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # 定义 API 密钥
 ## 请在自己电脑上配置 OpenAI API KEY 环境变量
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-API_URL = os.environ.get('API_URL') # OpenAI或者你选择的服务商与 HTTP Post 相关的 URL
+API_URL = os.environ.get('API_URL') # OpenAI或者你选择的服务商与 HTTP Post 相关的 URL，例如 "https://api2.aigcbest.top/v1/chat/completions"
+
 
 # 定义路径
 ## 文件路径
 DOCUMENTS_DIR = './documents'
-## 加载文件缓存路径
-CACHE_FILE_PATH = './documents_cache.json'
-## 嵌入向量缓存路径
-EMBEDDINGS_DIR = 'embeddings'
-EMBEDDINGS_FILE_PREFIX = 'embeddings_batch'
-EMBEDDINGS_FINAL_FILE = 'embeddings.npy'
+## 缓存路径
+CACHE_DIR = './cache'
+DOCUMENTS_CACHE_DIR = os.path.join(CACHE_DIR, 'cache_of_documents')
+DOCUMENTS_CACHE_FILE = os.path.join(DOCUMENTS_CACHE_DIR, 'cache_of_documents.json')
+EMBEDDINGS_CACHE_DIR = os.path.join(CACHE_DIR, 'cache_of_embeddings')
+EMBEDDINGS_BATCH_PREFIX = 'cache_of_embeddings_batch'
+EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_CACHE_DIR, 'cache_of_embeddings.npy')
+
 
 # 用 PyPDF2 加载PDF文件提取文本
 @st.cache_resource(hash_funcs={dict: id})
-def load_documents(documents_dir, cache_file_path=CACHE_FILE_PATH):
-    # 检查缓存文件是否存在
+def load_documents(documents_dir=DOCUMENTS_DIR, cache_file_path=DOCUMENTS_CACHE_FILE):
+    # 检查缓存文件夹和缓存文件是否存在
+    if not os.path.exists(DOCUMENTS_CACHE_DIR):
+        os.makedirs(DOCUMENTS_CACHE_DIR)
     if os.path.exists(cache_file_path):
         # 读取和检查缓存文件的修改时间
         cache_mtime = os.path.getctime(cache_file_path)
@@ -71,10 +76,12 @@ def load_documents(documents_dir, cache_file_path=CACHE_FILE_PATH):
             documents = json.load(f)
     
     # 列出加载的文件
-    items = os.listdir(DOCUMENTS_DIR)
-    file_names = [item for item in items if not item.startswith('.')]
-    files_string = "\n ".join(file_names)
-    st.write(f"已成功加载这些文件：\n```\n{files_string}\n```")
+    with st.sidebar.expander("已加载文件:"):
+        items = os.listdir(DOCUMENTS_DIR)
+        file_names = [item for item in items if not item.startswith('.')]
+        files_string = "\n ".join(file_names)
+        st.write(f"\n```\n{files_string}\n```")
+
     return documents
 
 
@@ -91,19 +98,23 @@ def split_text_chunks(documents):
                 'page_number': doc['page_number'],
                 'text': text
             })
-    st.write("已顺利进行文本分割")
+    print("已顺利进行文本分割")
     return chunks
 
 # 用 sentence-transformers 做嵌入向量生成
 @st.cache_resource
 def generate_embeddings(chunks, model_name='sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2', batch_size=32):
+    if not chunks:
+        st.write("现在没有文件，请您上传文件")
+        return np.empty((0, 384))
     # 如果嵌入文件已经存在，加载并返回
-    if os.path.exists(os.path.join(EMBEDDINGS_DIR, EMBEDDINGS_FINAL_FILE)):
-        embeddings = np.load(os.path.join(EMBEDDINGS_DIR, EMBEDDINGS_FINAL_FILE))
+    ## 目前版本如果文件有变动，缓存嵌入向量需要手动删除，重新生成，考虑在后继版本实现增量更新。
+    if os.path.exists(EMBEDDINGS_FILE):
+        embeddings = np.load(EMBEDDINGS_FILE)
+        print("已成功读取缓存嵌入文件")
         return embeddings
-    # 如果嵌入文件夹不存在，创建它
-    if not os.path.exists(EMBEDDINGS_DIR):
-        os.makedirs(EMBEDDINGS_DIR)
+    if not os.path.exists(EMBEDDINGS_CACHE_DIR):
+        os.makedirs(EMBEDDINGS_CACHE_DIR)
 
     # 初始化 SentenceTransformer 模型
     model = SentenceTransformer(model_name)
@@ -125,26 +136,23 @@ def generate_embeddings(chunks, model_name='sentence-transformers/paraphrase-mul
             batch_embeddings = batch_embeddings.cpu().numpy()
 
             # 保存当前批次的嵌入到指定文件夹
-            batch_file = f'{EMBEDDINGS_FILE_PREFIX}_{i}.npy'
-            np.save(os.path.join(EMBEDDINGS_DIR, batch_file), batch_embeddings)
+            batch_file = f'{EMBEDDINGS_BATCH_PREFIX}_{i}.npy'
+            np.save(os.path.join(EMBEDDINGS_CACHE_DIR, batch_file), batch_embeddings)
 
             # 将当前批次的嵌入添加到列表中
             embeddings.append(batch_embeddings)
         except Exception as e:
             print(f'Error processing batch {i}: {e}')
-
-            # 清理当前批次的临时文件
-            batch_file = f'{EMBEDDINGS_FILE_PREFIX}_{i}.npy'
-            os.remove(os.path.join(EMBEDDINGS_DIR, batch_file))
+            # 如果出错，会清理当前批次的临时文件
+            batch_file = f'{EMBEDDINGS_BATCH_PREFIX}_{i}.npy'
+            if os.path.exists(os.path.join(EMBEDDINGS_CACHE_DIR, batch_file)):
+                os.remove(os.path.join(EMBEDDINGS_CACHE_DIR, batch_file))
             break
 
-    # 合并所有批次的嵌入
+    # 合并所有嵌入向量成 Numpy 数组 保存
     embeddings = np.vstack(embeddings)
-
-    # 保存最终的嵌入到磁盘
-    final_file_path = os.path.join(EMBEDDINGS_DIR, EMBEDDINGS_FINAL_FILE)
-    np.save(final_file_path, embeddings)
-    st.write("已成功生成嵌入向量")
+    np.save(EMBEDDINGS_FILE, embeddings)
+    print("已成功生成嵌入向量")
     return embeddings
 
 
@@ -154,7 +162,7 @@ def create_vector_database(embeddings, chunks):
     d = embeddings.shape[1]
     index = faiss.IndexFlatL2(d)
     index.add(embeddings)
-    st.write("已成功创建向量数据库")
+    print("已成功创建向量数据库")
     return index, chunks
 
 
@@ -195,7 +203,19 @@ def generate_answer(query, context):
     return answer
 
 # 以下为用 streamlit 实现的 GUI
-st.title("LLM RAG 知识库问答系统")
+st.title("RAG-system: 知识库问答系统")
+st.write("Author: Mengyang Gao, Jiarui Feng, Bowen Wang")
+
+# 文件上传功能
+with st.sidebar.expander("上传新文件"):
+    uploaded_files = st.file_uploader("在此处上传新的文件", accept_multiple_files=True, type=['pdf'])
+    if uploaded_files:
+        for uploaded_file in uploaded_files:
+            file_path = os.path.join(DOCUMENTS_DIR, uploaded_file.name)
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+        
+        st.success("文件上传成功！")
 
 # 初始化会话状态
 if "messages" not in st.session_state:
