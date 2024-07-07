@@ -7,20 +7,17 @@
 # Put the files to be read under `./documents` directory manually, or use the upload button in GUI.
 # Run it by `streamlit run app.py`
 
-import streamlit as st
+
 import os
-from PyPDF2 import PdfReader
-from sentence_transformers import SentenceTransformer
+import sys
+import json
 import faiss
 import numpy as np
-import requests
-import json
+import streamlit as st
+from PyPDF2 import PdfReader
+from llmapi import generate_answer
+from sentence_transformers import SentenceTransformer
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-# 定义 API 密钥
-## 请在自己电脑上配置 OpenAI API KEY 环境变量
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-API_URL = os.environ.get('API_URL') # OpenAI或者你选择的服务商与 HTTP Post 相关的 URL，例如 "https://api2.aigcbest.top/v1/chat/completions"
 
 
 # 定义路径
@@ -176,31 +173,7 @@ def retrieve(query, index, chunks, model_name='sentence-transformers/paraphrase-
     return results
 
 
-# 用 LLM 生成答案
-def generate_answer(query, context):
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
-    }
 
-    data = {
-        "model": "gpt-4o",
-        "messages": [
-            {
-                "role": "system",
-                "content": "You are a helpful assistant. You must seek answers within the provided context first and output answers based on the context. When you are unable to find the answer within the context, you must use your own knowledge base to answer the question. You are not allowed to refuse to answer. If you are forced to answer without being able to find the answer, you need to indicate at the end of your response, in parentheses, that this answer was not found in the context. For questions with a definitive answer, provide the key answer directly without lengthy explanations. The output should be in Chinese."
-            },
-            {
-                "role": "user",
-                "content": f"问题: {query} 上下文: {context}"
-            }
-        ]
-    }
-
-    response = requests.post(API_URL, headers=headers, data=json.dumps(data)) # 从官方 API 文档获得更多信息
-    response_json = response.json()
-    answer = response_json['choices'][0]['message']['content']
-    return answer
 
 # 以下为用 streamlit 实现的 GUI
 st.title("RAG-system: 知识库问答系统")
@@ -244,8 +217,12 @@ if prompt := st.chat_input("请输入您的问题..."):
 
         supporting_passages = retrieve(prompt, index, chunks)
         context = ' '.join([passage['text'] for passage in supporting_passages])
-
-        answer = generate_answer(prompt, context)
+        if len(sys.argv) == 2:
+            print("Using model: ", sys.argv[1])
+            answer = generate_answer(prompt, context,model=sys.argv[1])
+        else:
+            print("Using default model: gpt")
+            answer = generate_answer(prompt, context)
 
         st.markdown(answer)
 

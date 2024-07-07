@@ -12,15 +12,17 @@ Version: 1.3
 
 # Getting Started
 
-```
+```sh
 conda create -n rag-system python=3.10
 conda activate rag-system
-pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain
+pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain, dashscope # dashscope for qianwen
 ```
 
 Put the files to be read under `./documents/` directory manually, or upload them in GUI.
 
-Run it by `streamlit run app.py`
+Run it by `streamlit run app.py` (Using default model: gpt) 
+
+Run it by `streamlit run app.py qwen` (Using model: qian wen) 
 
 ![running](./image/running.png)
 
@@ -29,6 +31,7 @@ Run it by `streamlit run app.py`
 ```
 .
 ├── app.py
+├── llmapi.py
 ├── cache
 │   ├── cache_of_documents # Cache of loaded files
 │   │   └── cache_of_documents.json
