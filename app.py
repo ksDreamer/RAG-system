@@ -1,12 +1,5 @@
-# RAG system
-# Using LLM and RAG to build a Q-A system based on specific knowledge. GUI is implemented by Streamlit.
-# Author: Kevin Stark, Jiarui Feng, Bowen Wang
-# Date: 2024/06/30
-# Version: 1.3
-# You must have these Python packages: streamlit, PyPDF2, sentence_transformers, faiss, requests, json, langchain
-# Put the files to be read under `./documents` directory manually, or use the upload button in GUI.
-# Run it by `streamlit run app.py`
-
+# Date: 2024/07/07
+# Version: 1.4
 
 import os
 import sys
@@ -174,10 +167,8 @@ def retrieve(query, index, chunks, model_name='sentence-transformers/paraphrase-
 
 
 
-
 # 以下为用 streamlit 实现的 GUI
 st.title("RAG-system: 知识库问答系统")
-st.write("Author: Mengyang Gao, Jiarui Feng, Bowen Wang")
 
 # 文件上传功能
 with st.sidebar.expander("上传新文件"):
