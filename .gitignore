@@ -2,3 +2,4 @@
 
 documents/*
 cache/
+__pycache__/
