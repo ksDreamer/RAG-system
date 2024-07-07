@@ -4,9 +4,9 @@ Using LLM and RAG to build a Q-A system based on specific knowledge. GUI is impl
 
 Author: Kevin Stark, Jiarui Feng, Bowen Wang
 
-Date: 2024/06/30
+Date: 2024/07/07
 
-Version: 1.3
+Version: 1.4
 
 ![overview](./image/overview.png)
 
@@ -15,7 +15,7 @@ Version: 1.3
 ```sh
 conda create -n rag-system python=3.10
 conda activate rag-system
-pip install streamlit, PyPDF2, sentence_transformers, faiss, requests, langchain, dashscope # dashscope for qianwen
+pip install streamlit, PyPDF2, sentence_transformers, faiss-cpu, requests, langchain, dashscope # dashscope for qianwen
 ```
 
 Put the files to be read under `./documents/` directory manually, or upload them in GUI.
@@ -47,6 +47,8 @@ Run it by `streamlit run app.py qwen` (Using model: qian wen)
 ```
 
 # Developing Log
+
+v1.4:感谢@EPTansuo 的PR，增加Qwen LLM的支持。修正README的错误，faiss的库安装需要`pip install faiss-cpu`或者`pip install faiss-gpu`，而不是单独安装faiss。
 
 v1.3: 更新缓存检查机制和命名规范；调整GUI，增加侧边栏，因为随着交互内容增加，想上传新文件/查看已上传文件信息要翻很久，如果有侧边栏/冻结首栏比较好。embeddings的缓存增量更新还没做。
 
