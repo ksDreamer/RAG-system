@@ -39,8 +39,9 @@ automated tests, package, or CI workflow.
 
 Provider HTTP contracts were tested with mocked responses, including timeouts,
 authentication/rate-limit/server failures, malformed JSON and oversized output.
-No paid remote-model calls were made. GitHub Actions has not been run for these local
-changes: the remote repository remains untouched.
+No paid remote-model calls were made. The first GitHub Actions run exposed Windows'
+legacy text encoding when reading the multilingual JSONL fixture. Evaluation input and
+report files now explicitly use UTF-8; Git text files retain LF line endings across hosts.
 
 ## Remaining work and honest boundaries
 
@@ -54,4 +55,5 @@ The resolved FastAPI/Starlette testing stack emits upstream deprecation warnings
 its httpx/AnyIO compatibility paths; tests pass and those warnings are retained.
 The original project has no declared software license; this remains an author decision.
 
-All work is local to `modernization/2026-local`. No push, release or deployment was performed.
+The modernization is now on `main`; follow the [CI matrix](https://github.com/MengyangGao/RAG-system/actions/workflows/ci.yml)
+for remote platform results. No release or deployment was performed.

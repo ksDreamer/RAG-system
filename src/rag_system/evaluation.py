@@ -10,7 +10,11 @@ from rag_system.store import digest
 
 
 def evaluate_dataset(dataset: Path, corpus: Path) -> dict:
-    cases = [json.loads(line) for line in dataset.read_text().splitlines() if line.strip()]
+    cases = [
+        json.loads(line)
+        for line in dataset.read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     if not cases:
         raise ValueError("Evaluation dataset is empty.")
     with tempfile.TemporaryDirectory() as temporary:
