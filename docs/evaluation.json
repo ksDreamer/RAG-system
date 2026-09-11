@@ -1,0 +1,119 @@
+{
+  "scope": "Bundled deterministic fixture; not a general RAG benchmark or semantic faithfulness measurement.",
+  "mode": "extractive / BM25",
+  "cases": 10,
+  "dataset_sha256": "b898e01764dcb5df6219e2b25b0ddeb5a627c07604010c01691007c3405667c0",
+  "corpus_sha256": {
+    "field-notes.md": "3f2c58f6001d780330d38d499c3cdba842686c4e1e18244b00854b8879412456",
+    "retrieval-guide.md": "39a14238959c0eed868a8fc283eb7839e217d4a7bbdca63a4d2478c0b70c016b",
+    "\u4e2d\u6587\u793a\u4f8b.md": "8646113bff81db1800fa85c2902b733f47178b37046957ebbd6e6edd724e2ec2"
+  },
+  "document_recall_at_5": 1.0,
+  "document_mrr_at_5": 1.0,
+  "unanswerable_abstention_rate": 1,
+  "exact_citation_validity": 1,
+  "results": [
+    {
+      "question": "How does incremental indexing detect unchanged documents?",
+      "retrieved": [
+        "field-notes.md",
+        "retrieval-guide.md"
+      ],
+      "expected": [
+        "field-notes.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 2.0
+    },
+    {
+      "question": "What is reciprocal rank fusion used for?",
+      "retrieved": [
+        "retrieval-guide.md",
+        "field-notes.md"
+      ],
+      "expected": [
+        "retrieval-guide.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 1.89
+    },
+    {
+      "question": "Which evaluation metrics does the notebook describe?",
+      "retrieved": [
+        "retrieval-guide.md"
+      ],
+      "expected": [
+        "retrieval-guide.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 1.83
+    },
+    {
+      "question": "What happens when a citation quote is invalid?",
+      "retrieved": [
+        "field-notes.md",
+        "retrieval-guide.md"
+      ],
+      "expected": [
+        "field-notes.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 1.66
+    },
+    {
+      "question": "What is the upload limit?",
+      "retrieved": [
+        "field-notes.md"
+      ],
+      "expected": [
+        "field-notes.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 2.1
+    },
+    {
+      "question": "Does choosing a remote provider send retrieved passages?",
+      "retrieved": [
+        "retrieval-guide.md",
+        "field-notes.md"
+      ],
+      "expected": [
+        "retrieval-guide.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 2.22
+    },
+    {
+      "question": "\u5220\u9664\u6587\u6863\u540e\u4f1a\u53d1\u751f\u4ec0\u4e48\uff1f",
+      "retrieved": [
+        "\u4e2d\u6587\u793a\u4f8b.md"
+      ],
+      "expected": [
+        "\u4e2d\u6587\u793a\u4f8b.md"
+      ],
+      "status": "answered",
+      "elapsed_ms": 2.13
+    },
+    {
+      "question": "What is the capital of Namibia?",
+      "retrieved": [],
+      "expected": [],
+      "status": "abstained",
+      "elapsed_ms": 1.82
+    },
+    {
+      "question": "Who won the Wimbledon final?",
+      "retrieved": [],
+      "expected": [],
+      "status": "abstained",
+      "elapsed_ms": 56.61
+    },
+    {
+      "question": "Quantum chromodynamics coupling constant?",
+      "retrieved": [],
+      "expected": [],
+      "status": "abstained",
+      "elapsed_ms": 1.97
+    }
+  ]
+}

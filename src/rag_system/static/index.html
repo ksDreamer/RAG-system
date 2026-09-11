@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>RAG-system · Document workspace</title><link rel="icon" href="/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/"><img src="/mark.svg" alt="" width="34" height="34"> <span>RAG<span class="brand-light">system</span><small>DOCUMENT WORKSPACE</small></span></a>
+  <div class="workspace"><span class="workspace-icon">M</span><div>My knowledge<small>Personal workspace</small></div><span class="live-dot" title="Local workspace"></span></div>
+  <div class="nav-label">WORKSPACE</div><a class="nav-item active" href="#main"><span>◈</span> Ask your documents <span class="nav-key">↵</span></a>
+  <div class="library-heading"><span class="nav-label">YOUR LIBRARY</span><span id="document-count" class="count">0</span></div>
+  <div id="documents" class="documents" aria-label="Document library"></div>
+  <label class="upload-area" for="file-input"><span class="upload-symbol">＋</span><strong>Add documents</strong><small>PDF, Markdown or text · up to 20 MiB</small><input id="file-input" type="file" accept=".pdf,.md,.txt" multiple></label>
+  <button class="text-button" id="demo-button">Try the example collection <span>↗</span></button>
+  <div class="sidebar-bottom"><span class="live-dot"></span><span id="privacy-label">Local by default</span><small>Built around your sources.</small><a href="/docs" target="_blank" rel="noopener">API reference ↗</a></div>
+</aside>
+<div class="main-shell">
+<header class="topbar"><span>Workspace <span class="slash">/</span> <strong>Ask</strong></span><span class="status-pill"><span class="live-dot"></span><span id="mode-label">Connecting</span></span></header>
+<main id="main">
+  <div class="eyebrow"><span class="tiny-mark">✳</span> A LITTLE CLARITY, FROM YOUR DOCUMENTS</div>
+  <h1>Your knowledge.<br><span>With the sources attached.</span></h1>
+  <p class="intro">Explore your documents, follow the evidence, and see exactly<br class="desktop-break"> where an answer comes from.</p>
+  <form id="question-form" class="composer"><label class="sr-only" for="question">Ask a question about your documents</label><textarea id="question" rows="2" maxlength="2000" required placeholder="What would you like to understand?"></textarea><div class="composer-bottom"><span id="scope-label">◈ &nbsp; Your document library</span><button id="ask-button" type="submit">Ask workspace <span>↑</span></button></div></form>
+  <div id="notice" role="status" aria-live="polite"></div>
+  <div id="suggestions" class="suggestions"><span>A place to start</span><button data-question="How does incremental indexing detect unchanged documents?">How do document updates work? ↗</button><button data-question="What is reciprocal rank fusion used for?">Explore the retrieval pipeline ↗</button><button data-question="引用不存在时系统如何处理？">试试中文问答 ↗</button></div>
+  <section id="answer-section" hidden aria-live="polite"><div class="answer-heading"><h2 id="answer-title">Answer</h2><span id="answer-meta"></span></div><div id="answer-card" class="answer-card"></div><div class="evidence-heading"><h2>Follow the evidence</h2><span id="source-count"></span></div><div id="sources" class="source-grid"></div></section>
+  <section id="welcome" class="welcome"><div class="welcome-top"><span class="nav-label">A SMALL WORKSPACE. A CLEARER PICTURE.</span><span>01 — 03</span></div><div class="feature-grid"><article><span class="feature-icon">▤</span><h3>Bring your documents</h3><p>Add files once. Update them whenever your knowledge changes.</p></article><article><span class="feature-icon">⌕</span><h3>Find the useful passages</h3><p>Search the collection and inspect the text behind each result.</p></article><article><span class="feature-icon">↗</span><h3>Go back to the source</h3><p>Every answer carries evidence. Missing evidence stays visible.</p></article></div></section>
+  <footer><span>RAG-system <span class="footer-dot">·</span> Made for thoughtful reading</span><span id="index-meta">SQLite workspace</span></footer>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,10 @@
+{"question":"How does incremental indexing detect unchanged documents?","relevant_documents":["field-notes.md"]}
+{"question":"What is reciprocal rank fusion used for?","relevant_documents":["retrieval-guide.md"]}
+{"question":"Which evaluation metrics does the notebook describe?","relevant_documents":["retrieval-guide.md"]}
+{"question":"What happens when a citation quote is invalid?","relevant_documents":["field-notes.md"]}
+{"question":"What is the upload limit?","relevant_documents":["field-notes.md"]}
+{"question":"Does choosing a remote provider send retrieved passages?","relevant_documents":["retrieval-guide.md"]}
+{"question":"删除文档后会发生什么？","relevant_documents":["中文示例.md"]}
+{"question":"What is the capital of Namibia?","relevant_documents":[]}
+{"question":"Who won the Wimbledon final?","relevant_documents":[]}
+{"question":"Quantum chromodynamics coupling constant?","relevant_documents":[]}

@@ -1,0 +1,61 @@
+name: CI
+on:
+  push:
+    branches: [main, 'modernization/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: '0.12.10'
+          python-version: ${{ matrix.python }}
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run --locked pytest --cov=rag_system --cov-fail-under=85
+      - run: uv run --locked rag-system evaluate eval/questions.jsonl
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: '0.12.10'
+          enable-cache: true
+      - run: uv sync --locked --group browser
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src/rag_system
+      - run: uv build
+      - name: Test installed wheel outside the checkout
+        shell: bash
+        run: |
+          uv venv "$RUNNER_TEMP/rag-wheel"
+          uv pip install --python "$RUNNER_TEMP/rag-wheel/bin/python" dist/*.whl
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/rag-wheel/bin/rag-system" demo
+          "$RUNNER_TEMP/rag-wheel/bin/rag-system" ask 'incremental indexing'
+          "$RUNNER_TEMP/rag-wheel/bin/python" -c 'from rag_system.api import create_app; create_app()'
+      - run: uv run --group browser playwright install --with-deps chromium
+      - run: uv run --group browser python tools/smoke_ui.py
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: browser-screenshots
+          path: artifacts/ui/
+          if-no-files-found: warn

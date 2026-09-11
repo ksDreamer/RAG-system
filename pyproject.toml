@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rag-system"
+version = "2.0.0"
+description = "A local document workspace with inspectable retrieval and evidence-linked answers."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+authors = [{name = "RAG-system contributors"}]
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "httpx>=0.28,<1",
+  "pydantic>=2.10,<3", "pypdf>=6,<7", "python-multipart>=0.0.20,<1",
+]
+
+[project.optional-dependencies]
+semantic = ["sentence-transformers>=5,<6"]
+
+[dependency-groups]
+browser = [
+    "playwright>=1.55,<2",
+]
+dev = ["pytest>=8,<10", "pytest-cov>=6,<8", "ruff>=0.12,<1", "mypy>=1.15,<2"]
+
+[project.scripts]
+rag-system = "rag_system.cli:main"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+ignore_missing_imports = true
+
