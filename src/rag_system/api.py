@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import urlparse
 
-from fastapi import FastAPI, HTTPException, Request, UploadFile
+from fastapi import FastAPI, HTTPException, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -20,6 +20,7 @@ from rag_system.service import KnowledgeBase, configured_kb
 class Question(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
     top_k: int = Field(default=5, ge=1, le=8)
+    document_ids: list[str] | None = Field(default=None, max_length=100)
 
 
 def create_app(kb: KnowledgeBase | None = None) -> FastAPI:
@@ -95,6 +96,19 @@ def create_app(kb: KnowledgeBase | None = None) -> FastAPI:
         finally:
             await file.close()
 
+    @app.get("/api/documents/{document_id}/passages")
+    def passages(
+        request: Request,
+        document_id: str,
+        offset: int = Query(0, ge=0),
+        limit: int = Query(20, ge=1, le=50),
+        focus: str | None = None,
+    ):
+        try:
+            return request.app.state.kb.store.read_document(document_id, offset, limit, focus)
+        except KeyError as exc:
+            raise HTTPException(404, exc.args[0]) from exc
+
     @app.delete("/api/documents/{document_id}")
     def delete(request: Request, document_id: str):
         if not request.app.state.kb.delete(document_id):
@@ -110,7 +124,7 @@ def create_app(kb: KnowledgeBase | None = None) -> FastAPI:
 
     @app.post("/api/ask", response_model=Answer)
     def ask(request: Request, question: Question):
-        return request.app.state.kb.ask(question.question, question.top_k)
+        return request.app.state.kb.ask(question.question, question.top_k, question.document_ids)
 
     app.mount("/", StaticFiles(directory=Path(__file__).with_name("static"), html=True), name="web")
     return app

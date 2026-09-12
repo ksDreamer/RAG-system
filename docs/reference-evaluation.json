@@ -1,0 +1,260 @@
+{
+  "scope": "Bundled deterministic fixture; not a general RAG benchmark or semantic faithfulness measurement.",
+  "mode": "extractive / BM25",
+  "cases": 18,
+  "dataset_sha256": "f144d78089c4c8f78e396a58ee2524848c73bd98cba7f8b97fc7f645f0b5c79a",
+  "corpus_sha256": {
+    "architecture.md": "c6a05ab0f6e68cdde73d47c7935e90575e5817a993eabc6b2d18fad8b2ee7667",
+    "data-model.md": "685d0ba67c21021525991801caf5dc7b52a76c0b20ed2eef4941bd5a55397b0f",
+    "sync.md": "d6e78b0749ce115b558a19e24abc99d965d61ec26368abf2d62a9d99eb0c4de2"
+  },
+  "document_recall_at_5": 0.9333333333333333,
+  "document_mrr_at_5": 0.9,
+  "passage_anchor_recall_at_5": 0.9333333333333333,
+  "unanswerable_abstention_rate": 1,
+  "exact_citation_validity": 1,
+  "results": [
+    {
+      "question": "How does Flutter keep database and network work off the UI isolate?",
+      "retrieved": [
+        "architecture.md",
+        "data-model.md",
+        "sync.md"
+      ],
+      "expected": [
+        "architecture.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.79
+    },
+    {
+      "question": "What prevents a stale search reply from replacing a newer selection?",
+      "retrieved": [
+        "architecture.md",
+        "data-model.md"
+      ],
+      "expected": [
+        "architecture.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.61
+    },
+    {
+      "question": "Does Apple load remote images automatically?",
+      "retrieved": [
+        "architecture.md",
+        "sync.md",
+        "data-model.md"
+      ],
+      "expected": [
+        "architecture.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.73
+    },
+    {
+      "question": "Which component owns SQL transactions, migrations and search?",
+      "retrieved": [
+        "architecture.md",
+        "data-model.md"
+      ],
+      "expected": [
+        "architecture.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.73
+    },
+    {
+      "question": "How are new parsed article identifiers derived?",
+      "retrieved": [
+        "data-model.md",
+        "architecture.md"
+      ],
+      "expected": [
+        "data-model.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.52
+    },
+    {
+      "question": "What prevents feed refresh from replacing captured full text?",
+      "retrieved": [
+        "architecture.md",
+        "data-model.md",
+        "sync.md"
+      ],
+      "expected": [
+        "data-model.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.53
+    },
+    {
+      "question": "Does OPML include notes, read states and captured content?",
+      "retrieved": [
+        "data-model.md",
+        "architecture.md",
+        "sync.md"
+      ],
+      "expected": [
+        "data-model.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.7
+    },
+    {
+      "question": "What happens when an incoming sync event is unknown or unresolved?",
+      "retrieved": [
+        "sync.md",
+        "data-model.md"
+      ],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.6
+    },
+    {
+      "question": "How are duplicate incoming sync deliveries made harmless?",
+      "retrieved": [
+        "sync.md",
+        "architecture.md"
+      ],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.48
+    },
+    {
+      "question": "What are the consequences of concurrent note edits and device clock skew?",
+      "retrieved": [
+        "sync.md",
+        "architecture.md",
+        "data-model.md"
+      ],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.48
+    },
+    {
+      "question": "How are CloudKit upload acknowledgements handled?",
+      "retrieved": [
+        "sync.md",
+        "architecture.md"
+      ],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.4
+    },
+    {
+      "question": "Are simulator builds evidence of live CloudKit validation?",
+      "retrieved": [
+        "sync.md",
+        "architecture.md",
+        "data-model.md"
+      ],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "answered",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.44
+    },
+    {
+      "question": "What is the storage schema version?",
+      "retrieved": [
+        "data-model.md"
+      ],
+      "expected": [
+        "data-model.md"
+      ],
+      "status": "answered",
+      "search_documents": [
+        "data-model.md"
+      ],
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.73
+    },
+    {
+      "question": "What does the sync journal record?",
+      "retrieved": [
+        "sync.md"
+      ],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "answered",
+      "search_documents": [
+        "sync.md"
+      ],
+      "passage_anchor_recall_at_5": 1.0,
+      "elapsed_ms": 1.46
+    },
+    {
+      "question": "What are the library tables?",
+      "retrieved": [],
+      "expected": [],
+      "status": "abstained",
+      "search_documents": [],
+      "passage_anchor_recall_at_5": null,
+      "elapsed_ms": 0.99
+    },
+    {
+      "question": "\u706b\u661f\u5927\u6c14\u7684\u6c29\u542b\u91cf\u662f\u591a\u5c11\uff1f",
+      "retrieved": [],
+      "expected": [],
+      "status": "abstained",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": null,
+      "elapsed_ms": 1.39
+    },
+    {
+      "question": "quantumchromodynamics",
+      "retrieved": [],
+      "expected": [],
+      "status": "abstained",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": null,
+      "elapsed_ms": 1.45
+    },
+    {
+      "question": "\u540c\u65f6\u7f16\u8f91\u7b14\u8bb0\u4f1a\u600e\u6837\uff1f",
+      "retrieved": [],
+      "expected": [
+        "sync.md"
+      ],
+      "status": "abstained",
+      "search_documents": null,
+      "passage_anchor_recall_at_5": 0.0,
+      "elapsed_ms": 1.41
+    }
+  ]
+}

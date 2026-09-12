@@ -7,6 +7,7 @@
   <div class="workspace"><span class="workspace-icon">M</span><div>My knowledge<small>Personal workspace</small></div><span class="live-dot" title="Local workspace"></span></div>
   <div class="nav-label">WORKSPACE</div><a class="nav-item active" href="#main"><span>◈</span> Ask your documents <span class="nav-key">↵</span></a>
   <div class="library-heading"><span class="nav-label">YOUR LIBRARY</span><span id="document-count" class="count">0</span></div>
+  <p class="scope-hint">Select sources for your question. Open a name to read it.</p><button type="button" id="all-documents" class="scope-all">Use all documents</button>
   <div id="documents" class="documents" aria-label="Document library"></div>
   <label class="upload-area" for="file-input"><span class="upload-symbol">＋</span><strong>Add documents</strong><small>PDF, Markdown or text · up to 20 MiB</small><input id="file-input" type="file" accept=".pdf,.md,.txt" multiple></label>
   <button class="text-button" id="demo-button">Try the example collection <span>↗</span></button>
@@ -26,4 +27,9 @@
   <footer><span>RAG-system <span class="footer-dot">·</span> Made for thoughtful reading</span><span id="index-meta">SQLite workspace</span></footer>
 </main>
 </div>
+<dialog id="document-reader" aria-labelledby="reader-title">
+  <header class="reader-header"><div><small>SOURCE READER</small><h2 id="reader-title">Document</h2></div><button id="reader-close" type="button" aria-label="Close document reader">×</button></header>
+  <p id="reader-message" role="status"></p><div id="reader-passages"></div>
+  <footer class="reader-navigation"><button id="reader-previous" type="button">Previous passages</button><span id="reader-page"></span><button id="reader-next" type="button">Next passages</button></footer>
+</dialog>
 </body></html>

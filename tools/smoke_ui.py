@@ -80,6 +80,23 @@ def main():
                     page.screenshot(path=str(args.output / "answer.png"), full_page=True)
                     page.get_by_role("button", name="Ask workspace").click()
                     expect(page.locator("#answer-meta")).to_contain_text("Cached")
+                    page.get_by_role("button", name="Read in document").first.click()
+                    expect(page.get_by_role("dialog")).to_be_visible()
+                    expect(page.locator(".reader-passage.highlighted")).to_be_visible()
+                    page.screenshot(path=str(args.output / "source-reader.png"), full_page=False)
+                    page.keyboard.press("Escape")
+                    expect(page.get_by_role("dialog")).not_to_be_visible()
+                    for checkbox in page.locator(".document-select").all():
+                        checkbox.uncheck()
+                    expect(page.locator("#ask-button")).to_be_disabled()
+                    expect(page.locator("#scope-label")).to_have_text("0 of 3 documents selected")
+                    page.locator(".document-select").first.check()
+                    with page.expect_request("**/api/ask") as scoped_request:
+                        page.get_by_role("button", name="Ask workspace").click()
+                    assert len(scoped_request.value.post_data_json["document_ids"]) == 1
+                    expect(page.locator("#ask-button")).to_be_enabled()
+                    page.locator("#all-documents").click()
+                    expect(page.locator("#scope-label")).to_have_text("All 3 documents")
                     page.locator("#question").fill("What is the capital of Namibia?")
                     page.get_by_role("button", name="Ask workspace").click()
                     expect(page.locator("#answer-title")).to_have_text("More evidence needed")
@@ -97,6 +114,16 @@ def main():
                     expect(page.locator("#answer-card")).to_contain_text("meteorite")
                     assert page.evaluate("window.injected === undefined")
                     expect(page.locator("#ask-button")).to_be_enabled()
+                    page.get_by_role("button", name="Read upload.txt", exact=True).click()
+                    expect(page.locator("#reader-passages")).to_contain_text(
+                        "<script>window.injected=true</script>"
+                    )
+                    assert page.evaluate("window.injected === undefined")
+                    page.set_viewport_size({"width": 390, "height": 844})
+                    assert page.evaluate(
+                        "document.querySelector('dialog').scrollWidth <= innerWidth"
+                    )
+                    page.locator("#reader-close").click()
                     page.get_by_role("button", name="Delete upload.txt").click()
                     expect(page.locator("#document-count")).to_have_text("3")
                     expect(page.locator("#answer-section")).not_to_be_visible()
@@ -108,7 +135,7 @@ def main():
                     assert not errors, errors
                     browser.close()
                 print(
-                    "PASS: load, demo, query, citations, cache, abstention, upload, safe text, deletion, mobile layout."
+                    "PASS: load, demo, query, scoped retrieval, reader, citations, cache, abstention, upload, safe text, deletion, mobile layout."
                 )
             finally:
                 server.terminate()

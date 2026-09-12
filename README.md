@@ -31,7 +31,8 @@ there is no frontend build step or mandatory cloud service.
 - **Evidence-linked answers:** page/section/character provenance, exact quote validation,
   and withheld answers when generated evidence fails validation.
 - **Provider choice:** offline source excerpts, Ollama, or a Chat Completions-compatible endpoint.
-- **Practical UI:** upload a collection, try example questions, follow citations, and remove files.
+- **Practical UI:** select which documents a question may use, open citations in a paginated
+  source reader, upload a collection, try example questions, and remove files.
   Responsive layout, keyboard submission, visible progress, and useful error states.
 - **Reproducible engineering:** a committed `uv.lock`, offline regression tests, browser smoke
   tests, fixture evaluation and CI across Python 3.11–3.13 on macOS, Windows and Linux.
@@ -53,7 +54,10 @@ it does not require an API key, model download, or paid service.
 
 The collection is stored in `.data/knowledge.sqlite3`. Uploading an unchanged file is a
 no-op; uploading changed content under the same filename replaces its index. Use the
-remove button to delete a document from the searchable collection.
+remove button to delete a document from the searchable collection. Select documents with
+the library checkboxes; an empty selection disables asking. Click a filename to read its
+indexed text, or **Read in document** beside an answer to highlight the cited passage.
+The reader shows extracted text, not the original PDF layout.
 
 ```bash
 uv run rag-system demo
@@ -129,12 +133,17 @@ PDF / Markdown / text → bounded extraction → page + section chunks
 See [architecture and tradeoffs](docs/architecture.md) for index lifecycle, cache keys,
 concurrency, model boundaries, and source references. The local API reference is at
 **http://127.0.0.1:8000/docs**. Key endpoints are `POST /api/documents`,
-`DELETE /api/documents/{id}`, `POST /api/ask`, and `GET /api/status`.
+`DELETE /api/documents/{id}`, `GET /api/documents/{id}/passages`, `POST /api/ask`, and `GET /api/status`.
+`POST /api/ask` accepts optional `document_ids`: omitted/null searches the whole library;
+`[]` searches nothing. Unknown IDs fail explicitly. Both BM25 and dense candidates are
+filtered before ranking, and cached answers are isolated by the selection.
 
 <details>
 <summary>See a real answer and its source passages</summary>
 
 ![Source excerpts and linked evidence from the running application](docs/assets/answer.png)
+
+![Reading the indexed document with the cited passage highlighted](docs/assets/source-reader.png)
 
 </details>
 
@@ -153,7 +162,21 @@ production latency, or multilingual retrieval quality.
 
 Bring a representative collection and a separate labeled evaluation set before making
 quality claims. Each JSONL row has `question` and `relevant_documents` (filenames).
-An empty relevant-document list marks an unanswerable question.
+An empty relevant-document list marks an unanswerable question. Optional `search_documents`
+limits retrieval by filename. Optional `required_passages` contains `{"document": "file.md",
+"quote": "exact indexed text"}` anchors: the evaluator rejects invalid labels and reports
+passage-anchor recall separately from document recall.
+
+A second [frozen reference set](eval/reference/README.md) contains **18 manually labeled
+questions over three real engineering documents**. Its [committed BM25 result](docs/reference-evaluation.json)
+finds 14/15 expected passage anchors (93.3%), document MRR 0.90, and abstains on all three
+empty-scope/out-of-corpus cases. The Chinese question against English text fails and stays
+in the regression set. These small-set results are not evidence of general multilingual
+retrieval quality.
+
+```bash
+uv run rag-system evaluate eval/reference/questions.jsonl --corpus eval/reference/corpus
+```
 
 ## Development
 
@@ -171,7 +194,8 @@ uv run --group browser python tools/smoke_ui.py
 ```
 
 The browser test exercises loading, ingestion, question submission, citations, cached
-answers, refusal, safe text rendering, deletion and a 390 px mobile layout. It never
+answers, document selection, highlighted source reading, refusal, safe text rendering,
+deletion and a 390 px mobile layout. It never
 uses your private collection or configured provider. See [contributing](CONTRIBUTING.md)
 and the [modernization audit](docs/modernization.md) for validation scope.
 

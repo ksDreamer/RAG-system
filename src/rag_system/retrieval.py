@@ -25,21 +25,32 @@ def retrieve(
     embedder: Embedder | None = None,
     reranker: Reranker | None = None,
     min_similarity: float = 0.35,
+    *,
+    document_ids: list[str] | None = None,
 ) -> list[Source]:
     terms = list(dict.fromkeys(tokens(query)))[:64]
-    if not terms:
+    if not terms or document_ids == []:
         return []
+    scope_sql = ""
+    scope_params: tuple[str, ...] = ()
+    if document_ids is not None:
+        scope_sql = " AND c.document_id IN (" + ",".join("?" for _ in document_ids) + ")"
+        scope_params = tuple(document_ids)
     with store.connect() as db:
         lexical = [
             r[0]
             for r in db.execute(
-                "SELECT id FROM chunks_fts WHERE chunks_fts MATCH ? ORDER BY rank LIMIT 30",
-                (" OR ".join('"' + t.replace('"', '""') + '"' for t in terms),),
+                "SELECT chunks_fts.id FROM chunks_fts JOIN chunks c ON c.id=chunks_fts.id WHERE chunks_fts MATCH ?"
+                + scope_sql
+                + " ORDER BY rank, chunks_fts.id LIMIT 30",
+                (" OR ".join('"' + t.replace('"', '""') + '"' for t in terms), *scope_params),
             )
         ]
         rankings = [lexical]
         if embedder:
-            rows = db.execute("SELECT id,content_hash,text FROM chunks").fetchall()
+            rows = db.execute(
+                "SELECT id,content_hash,text FROM chunks c WHERE 1=1" + scope_sql, scope_params
+            ).fetchall()
             store.ensure_embeddings(db, [(r[1], r[2]) for r in rows], embedder)
             if rows:
                 q = embedder.encode([query])[0]

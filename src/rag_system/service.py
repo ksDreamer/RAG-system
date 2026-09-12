@@ -41,12 +41,23 @@ class KnowledgeBase:
         with self.lock:
             return self.store.delete(document_id)
 
-    def ask(self, query: str, top_k: int = 5) -> Answer:
+    def ask(self, query: str, top_k: int = 5, document_ids: list[str] | None = None) -> Answer:
         query = query.strip()
         if not query or len(query) > 2000 or not 1 <= top_k <= 8:
             raise ValueError("Question must contain 1–2000 characters and top_k must be 1–8.")
         started = time.perf_counter()
         with self.lock:
+            documents = self.store.documents()
+            if document_ids is not None:
+                if len(document_ids) > 100 or any(
+                    not isinstance(value, str) for value in document_ids
+                ):
+                    raise ValueError("Choose at most 100 document identifiers.")
+                document_ids = sorted(set(document_ids))
+                if set(document_ids) - {doc["id"] for doc in documents}:
+                    raise ValueError(
+                        "A selected document is no longer available. Refresh your library."
+                    )
             key = digest(
                 json.dumps(
                     [
@@ -55,8 +66,9 @@ class KnowledgeBase:
                         self.provider.identity,
                         self.embedder.identity if self.embedder else "none",
                         self.reranker.identity if self.reranker else "none",
-                        "retrieval-v1",
-                        [(d["id"], d["digest"]) for d in self.store.documents()],
+                        "retrieval-v2-scoped",
+                        document_ids,
+                        [(d["id"], d["digest"]) for d in documents],
                     ]
                 )
             )
@@ -66,7 +78,14 @@ class KnowledgeBase:
                 result = Answer.model_validate_json(cached[0])
                 result.cached = True
             else:
-                sources = retrieve(self.store, query, top_k, self.embedder, self.reranker)
+                sources = retrieve(
+                    self.store,
+                    query,
+                    top_k,
+                    self.embedder,
+                    self.reranker,
+                    document_ids=document_ids,
+                )
                 result = Answer(
                     status="abstained",
                     mode=self.provider.identity.split(":")[0],

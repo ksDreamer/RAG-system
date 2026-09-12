@@ -28,6 +28,7 @@ jobs:
       - run: uv sync --locked
       - run: uv run --locked pytest --cov=rag_system --cov-fail-under=85
       - run: uv run --locked rag-system evaluate eval/questions.jsonl
+      - run: uv run --locked rag-system evaluate eval/reference/questions.jsonl --corpus eval/reference/corpus
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 15

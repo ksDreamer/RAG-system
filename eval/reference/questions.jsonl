@@ -1,0 +1,18 @@
+{"question": "How does Flutter keep database and network work off the UI isolate?", "relevant_documents": ["architecture.md"], "required_passages": [{"document": "architecture.md", "quote": "Flutter has one persistent database worker and one persistent network worker"}]}
+{"question": "What prevents a stale search reply from replacing a newer selection?", "relevant_documents": ["architecture.md"], "required_passages": [{"document": "architecture.md", "quote": "Shell state uses request generations"}]}
+{"question": "Does Apple load remote images automatically?", "relevant_documents": ["architecture.md"], "required_passages": [{"document": "architecture.md", "quote": "remote images need explicit opt-in"}]}
+{"question": "Which component owns SQL transactions, migrations and search?", "relevant_documents": ["architecture.md"], "required_passages": [{"document": "architecture.md", "quote": "`storage` owns SQL transactions, migrations, search and sync replay."}]}
+{"question": "How are new parsed article identifiers derived?", "relevant_documents": ["data-model.md"], "required_passages": [{"document": "data-model.md", "quote": "New parsed article IDs are SHA256-derived from the feed identity and external GUID"}]}
+{"question": "What prevents feed refresh from replacing captured full text?", "relevant_documents": ["data-model.md"], "required_passages": [{"document": "data-model.md", "quote": "A feed update cannot silently replace a saved full-text body."}]}
+{"question": "Does OPML include notes, read states and captured content?", "relevant_documents": ["data-model.md"], "required_passages": [{"document": "data-model.md", "quote": "OPML exports subscriptions, not notes, read states or captured content."}]}
+{"question": "What happens when an incoming sync event is unknown or unresolved?", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "Unknown or unresolved events fail for retry"}]}
+{"question": "How are duplicate incoming sync deliveries made harmless?", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "`sync_receipts` makes duplicate deliveries harmless."}]}
+{"question": "What are the consequences of concurrent note edits and device clock skew?", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "Concurrent note edits can replace each other."}]}
+{"question": "How are CloudKit upload acknowledgements handled?", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "inspect each save result before acknowledging"}]}
+{"question": "Are simulator builds evidence of live CloudKit validation?", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "Simulator and ad-hoc builds do not establish live CloudKit validation."}]}
+{"question": "What is the storage schema version?", "relevant_documents": ["data-model.md"], "required_passages": [{"document": "data-model.md", "quote": "Schema version **5**"}], "search_documents": ["data-model.md"]}
+{"question": "What does the sync journal record?", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "Entry creation/edit/delete, item states, subscriptions, groups, membership and supported settings"}], "search_documents": ["sync.md"]}
+{"question": "What are the library tables?", "relevant_documents": [], "search_documents": []}
+{"question": "火星大气的氩含量是多少？", "relevant_documents": []}
+{"question": "quantumchromodynamics", "relevant_documents": []}
+{"question": "同时编辑笔记会怎样？", "relevant_documents": ["sync.md"], "required_passages": [{"document": "sync.md", "quote": "Concurrent note edits can replace each other."}]}

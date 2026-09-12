@@ -105,6 +105,40 @@ class Store:
             "chunks": len(rows),
         }
 
+    def read_document(
+        self, document_id: str, offset: int = 0, limit: int = 20, focus: str | None = None
+    ) -> dict:
+        if offset < 0 or not 1 <= limit <= 50:
+            raise ValueError("offset must be non-negative and limit must be 1–50.")
+        with self.connect() as db:
+            db.execute("BEGIN")
+            document = db.execute("SELECT * FROM documents WHERE id=?", (document_id,)).fetchone()
+            if document is None:
+                raise KeyError("Document not found.")
+            keys = [
+                r[0]
+                for r in db.execute(
+                    "SELECT id FROM chunks WHERE document_id=? ORDER BY page,start,id",
+                    (document_id,),
+                )
+            ]
+            if focus is not None:
+                if focus not in keys:
+                    raise KeyError("This source passage changed. Ask the question again.")
+                offset = keys.index(focus) // limit * limit
+            rows = db.execute(
+                "SELECT id,page,section,start,end,text FROM chunks WHERE document_id=? ORDER BY page,start,id LIMIT ? OFFSET ?",
+                (document_id, limit, offset),
+            )
+            return {
+                "document": dict(document),
+                "passages": [dict(row) for row in rows],
+                "offset": offset,
+                "limit": limit,
+                "total": len(keys),
+                "focus": focus,
+            }
+
     def delete(self, doc_id: str) -> bool:
         with self.connect() as db:
             removed = db.execute("DELETE FROM documents WHERE id=?", (doc_id,)).rowcount > 0

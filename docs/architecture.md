@@ -79,3 +79,16 @@ indexes should be added only when a measured workload justifies them.
 - [Chat Completions API](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create): the compatibility adapter's wire format.
 
 The core architecture is intentionally independent of a specific model vendor.
+
+
+## Document selection and reading
+
+An optional document-ID scope is applied inside both lexical and dense retrieval before
+candidate caps. Missing IDs fail explicitly; an empty scope returns no evidence. The
+canonical scope participates in cache identity. Selection is a retrieval convenience
+for this single-user app, not an access-control boundary.
+
+The source reader serves bounded pages of indexed chunks from a consistent SQLite read
+snapshot. A citation focus resolves its current document and exact chunk ID; replacement
+invalidates old chunk IDs, so a stale citation produces an explicit error instead of
+opening a different passage. Content is rendered as text, including Markdown/HTML input.
